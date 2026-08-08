@@ -1,91 +1,100 @@
 # Capstone MLOps Project
 
-## Overview
+## Project Overview
 
-This project demonstrates an end-to-end MLOps workflow for a machine learning application using the Breast Cancer dataset.
+This project implements a complete MLOps pipeline for a machine learning classification application based on the **Breast Cancer dataset**.
 
-The project includes data versioning with DVC, experiment tracking and model registration with MLflow, a FastAPI prediction service, Docker containerization, and CI/CD automation using GitHub Actions.
+The workflow covers the complete lifecycle of the ML application, including dataset versioning, data processing, model training, experiment management, model selection, API development, containerization, and automated CI/CD.
+
+### Key Components
+
+* **DVC** – Dataset and pipeline version control
+* **Scikit-learn** – Machine learning model development
+* **MLflow** – Experiment tracking and model management
+* **FastAPI** – REST API for model predictions
+* **Docker** – Application containerization
+* **GitHub Actions** – Continuous Integration and Continuous Deployment
 
 ---
 
-## MLOps Workflow
+## End-to-End Pipeline
+
+The project follows the workflow below:
 
 ```text
-Dataset
-   ↓
-DVC Data Versioning
-   ↓
-Data Preparation
-   ↓
-Train Multiple ML Models
-   ↓
+Breast Cancer Dataset
+        ↓
+Dataset Versioning with DVC
+        ↓
+Data Processing
+        ↓
+Training Multiple Classifiers
+        ↓
 MLflow Experiment Tracking
-   ↓
-Compare Model Performance
-   ↓
-Register Best Model
-   ↓
-FastAPI Prediction API
-   ↓
-Docker
-   ↓
+        ↓
+Performance Evaluation
+        ↓
+Selection of Best Model
+        ↓
+Model Registration
+        ↓
+FastAPI REST Service
+        ↓
+Docker Container
+        ↓
 GitHub Actions CI/CD
 ```
 
 ---
 
-## Machine Learning Models
+## Model Development and Comparison
 
-Three classification models were trained and compared:
+Three different classification algorithms were trained and evaluated:
 
-- Random Forest
-- Decision Tree
-- Logistic Regression
+1. **Random Forest**
+2. **Decision Tree**
+3. **Logistic Regression**
 
-### Model Performance
+### Evaluation Results
 
-| Model | Accuracy |
-|---|---:|
-| Random Forest | 0.956 |
-| Decision Tree | 0.912 |
-| Logistic Regression | **0.982** |
+| Classification Model |  Accuracy |
+| -------------------- | --------: |
+| Random Forest        |     0.956 |
+| Decision Tree        |     0.912 |
+| Logistic Regression  | **0.982** |
 
-Logistic Regression achieved the highest accuracy of **0.982** and was registered as the best-performing model.
-
----
-
-## MLflow
-
-MLflow is used for:
-
-- Experiment tracking
-- Logging parameters
-- Logging metrics
-- Storing model artifacts
-- Model registration
-
-### Registered Model
-
-| Property | Details |
-|---|---|
-| Model Name | BreastCancerModel |
-| Version | 2 |
-| Model | Logistic Regression |
-| Accuracy | 0.982 |
+Based on the evaluation results, **Logistic Regression** produced the best accuracy of **0.982**. Therefore, it was selected as the final model for the application.
 
 ---
 
-## DVC
+## Experiment Tracking with MLflow
 
-DVC (Data Version Control) is used to track and version the dataset and ML pipeline.
+The experiments and model results are managed using **MLflow**.
 
-DVC status was successfully verified:
+MLflow is responsible for:
 
-```text
-Data and pipelines are up to date.
-```
+* Recording experiment parameters
+* Tracking evaluation metrics
+* Saving trained model artifacts
+* Comparing different model runs
+* Registering the selected model
 
-### Important DVC Components
+### Final Registered Model
+
+| Parameter       | Value               |
+| --------------- | ------------------- |
+| Registered Name | `BreastCancerModel` |
+| Model Version   | `2`                 |
+| Algorithm       | Logistic Regression |
+| Accuracy        | `0.982`             |
+
+---
+
+## Dataset and DVC
+
+**DVC (Data Version Control)** is incorporated to manage the dataset and maintain reproducibility of the ML pipeline.
+
+The repository contains the following DVC-related components:
 
 ```text
 .dvc/
@@ -93,31 +102,45 @@ Data and pipelines are up to date.
 data/
 ```
 
+The pipeline was verified using DVC, with the following status:
+
+```text
+Data and pipelines are up to date.
+```
+
+This helps ensure that the required data and pipeline stages remain synchronized.
+
 ---
 
-## FastAPI Prediction API
+## Prediction Service
 
-A FastAPI application is used to provide predictions through a REST API.
+The trained model is exposed through a **FastAPI** application.
 
-### Prediction Endpoint
+The API provides a REST endpoint that accepts the required breast cancer feature values and returns the corresponding prediction.
+
+### API Endpoint
 
 ```text
 POST /predict
 ```
 
-### Run the API
+### Start the FastAPI Server
+
+From the project directory, run:
 
 ```bash
 uvicorn src.app:app --reload
 ```
 
-The API will run at:
+The application will be available at:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-### Swagger API Documentation
+### Interactive API Documentation
+
+FastAPI automatically provides Swagger documentation.
 
 Open:
 
@@ -125,9 +148,7 @@ Open:
 http://127.0.0.1:8000/docs
 ```
 
-The `/predict` endpoint accepts the required input features and returns the predicted class.
-
-### Example Response
+### Sample Prediction Output
 
 ```json
 {
@@ -137,71 +158,77 @@ The `/predict` endpoint accepts the required input features and returns the pred
 
 ---
 
-## Docker
+## Containerization with Docker
 
-The application is containerized using Docker.
+Docker is used to package the application together with its required dependencies.
 
-### Build the Docker Image
+### Create the Docker Image
+
+Run the following command from the project directory:
 
 ```bash
 docker build -t capstone-mlops .
 ```
 
-The `Dockerfile` contains the configuration required to build and run the application.
+The `Dockerfile` defines the environment and instructions required to build the application image.
 
 ---
 
-## GitHub Actions CI/CD
+## Automated CI/CD
 
-GitHub Actions is used to automate the project workflow.
+**GitHub Actions** is used to automate the development and deployment workflow.
 
-### CI/CD Pipeline
+The workflow is configured to execute when changes are pushed to the `main` branch.
 
-The CI/CD pipeline performs the following tasks:
+### Workflow Stages
 
-1. Checkout the repository
-2. Set up Python
-3. Install dependencies
-4. Run tests
-5. Prepare the data
-6. Train the model
-7. Evaluate the model
-8. Build and deploy the application
+The automation performs tasks such as:
 
-The workflow is triggered by changes pushed to the `main` branch.
+1. Checking out the project files
+2. Configuring the Python environment
+3. Installing required packages
+4. Executing tests
+5. Preparing the dataset
+6. Training the ML model
+7. Evaluating model performance
+8. Creating the Docker image
+9. Deploying the application
+
+This automation helps maintain a consistent and reproducible ML development process.
 
 ---
 
-## Run the Project Locally
+## Running the Project
 
-### 1. Clone the Repository
+### Step 1 — Navigate to the Project
+
+Open Command Prompt or PowerShell and execute:
 
 ```bash
-git clone https://github.com/jmg251004-cmyk/Capstone_MLOps_Joselet_Mebel_Glancy.git
-cd Capstone_MLOps
+cd "C:\Users\Skkir\OneDrive\Documents\Projects\DevOps session\Capstone\_MLOps\_Project"
 ```
 
-### 2. Install Dependencies
+### Step 2 — Install Required Packages
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the Training
+### Step 3 — Train the Model
 
 ```bash
 python src/train.py
 ```
 
-### 4. Start FastAPI
+### Step 4 — Launch the Prediction API
 
 ```bash
 uvicorn src.app:app --reload
 ```
 
-### 5. Open Swagger
+### Step 5 — Access the API Documentation
 
-Open the following URL in your browser:
+Open the following address in your browser:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -209,10 +236,10 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Project Structure
+## Repository Layout
 
 ```text
-Capstone_MLOps/
+_MLOps_Project/
 │
 ├── .dvc/
 ├── .github/
@@ -229,6 +256,7 @@ Capstone_MLOps/
 │   └── utils.py
 │
 ├── tests/
+│
 ├── Dockerfile
 ├── requirements.txt
 ├── mlflow.db
@@ -238,14 +266,24 @@ Capstone_MLOps/
 
 ---
 
-## Technologies Used
+## Technology Stack
 
-- Python
-- Scikit-learn
-- MLflow
-- DVC
-- FastAPI
-- Docker
-- Git
-- GitHub
-- GitHub Actions
+| Technology     | Purpose                                    |
+| -------------- | ------------------------------------------ |
+| Python         | Application and ML development             |
+| Scikit-learn   | Classification models                      |
+| DVC            | Dataset and pipeline versioning            |
+| MLflow         | Experiment tracking and model registration |
+| FastAPI        | Prediction API                             |
+| Docker         | Containerization                           |
+| Git            | Version control                            |
+| GitHub         | Source code hosting                        |
+| GitHub Actions | CI/CD automation                           |
+
+---
+
+## Project Outcome
+
+The project demonstrates how a machine learning model can be taken beyond model training and integrated into a reproducible MLOps workflow.
+
+The final system combines **data versioning, model experimentation, model registration, API serving, containerization, and CI/CD automation** into a single workflow.
